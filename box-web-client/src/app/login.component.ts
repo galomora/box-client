@@ -1,0 +1,145 @@
+import { Component, OnInit } from '@angular/core';
+import { URLSearchParams, QueryEncoder, Http } from '@angular/http';
+
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import 'rxjs/add/operator/map' // map
+import { BoxAppConfig } from './box.app.config';
+import { BoxLoginService } from './box.login.service';
+import { UserService } from './user.service';
+import { UserFilesService } from './user.files.service';
+import { BoxClientService } from './box.client.service';
+import { UserElement } from './user.element';
+
+@Component({
+    selector: 'login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./app.component.css'],
+    providers: [BoxLoginService, UserService, UserFilesService, BoxClientService]
+})
+
+export class LoginComponent implements OnInit {
+
+    userLoginToken: string;
+    loginStatus: string;
+    errorMessage: string;
+    boxAppConfig: BoxAppConfig;
+    showError: boolean = false;
+    userName: string;
+    userElements: Array<UserElement> = [];
+
+    constructor(private boxLoginService: BoxLoginService,
+        private userService: UserService,
+        private userFilesService: UserFilesService,
+        private route: ActivatedRoute,
+        private boxClientService: BoxClientService) {
+    }
+
+    ngOnInit(): void {
+
+        // obtener token param de http
+
+        this.userLoginToken = this.route.snapshot.queryParams['code'];
+        if (this.userLoginToken === undefined) {
+            // no hay token, no login
+            console.log('no hay token, no login');
+        } else {
+            if (this.boxLoginService.isnewLogin(this.userLoginToken)) {
+                // nuevo token, se hace login
+                console.log('nuevo token, se hace login');
+                this.executeLoginToBox();
+            } else {
+                console.log('no se debe hacer login con el mismo token anterior');
+                // no se debe hacer login con el mismo token anterior
+                this.getUserInfo();
+                this.getUserFolders();
+            }
+        }
+    }
+
+    private executeLoginToBox() {
+        this.boxLoginService.getBoxAppConfig().subscribe(
+            boxConfig => {
+                this.boxAppConfig = boxConfig;
+                this.getAuthorization();
+            },
+            error => {
+                this.errorMessage = error.toString();
+                console.log('Error obtener configuracion ' + error.toString());
+                this.showError = true;
+            }
+        );
+    }
+
+    private getAuthorization() {
+        let loggedUserToken: string;
+        this.boxLoginService.getAuthorizationInfo(this.userLoginToken, this.boxAppConfig).subscribe(
+            authInfo => {
+                loggedUserToken = authInfo.accessToken;
+                this.boxLoginService.setUserCookie(loggedUserToken);
+                this.boxLoginService.setLoginTokenCookie(this.userLoginToken);
+                this.getUserInfo();
+                this.getUserFolders();
+            },
+            error => {
+                this.errorMessage = error.toString();
+                console.log('Error obtener autenticacion ' + error.toString());
+                this.showError = true;
+            }
+        );
+    }
+
+    private getUserInfo() {
+        this.boxLoginService.getBoxAppConfig().subscribe(
+            boxConfig => {
+                this.boxAppConfig = boxConfig;
+                this.getBoxUser();
+            },
+            error => {
+                this.errorMessage = error.toString();
+                console.log('Error obtener configuracion ' + error.toString());
+                this.showError = true;
+            }
+        );
+
+    }
+
+    private getBoxUser() {
+        if (!this.boxLoginService.isLoggedIn()) { return; }
+        this.userService.getUser(this.boxAppConfig).subscribe(
+            userInfo => {
+                console.log(' usuario ' + userInfo.name);
+                this.userName = userInfo.name;
+            },
+            error => {
+                this.errorMessage = error.toString();
+                console.log('Error obtener info de usuario ' + error.toString());
+                this.showError = true;
+            }
+        );
+    }
+
+    private getUserFolders() {
+        this.boxLoginService.getBoxAppConfig().subscribe(
+            boxConfig => {
+                this.boxAppConfig = boxConfig;
+                let boxClient = this.boxClientService.getClient(this.boxAppConfig);
+                this.userFilesService.getRootFolder(boxClient).subscribe(
+                    rootFolderInfo => {
+                        this.userFilesService.getFolderElements(rootFolderInfo, this.userElements, boxClient);
+                    },
+                    error => {
+                        this.errorMessage = error.toString();
+                        console.log('Error consultar directorios ' + error.toString());
+                        this.showError = true;
+                    }
+                );
+            },
+            error => {
+                this.errorMessage = error.toString();
+                console.log('Error obtener configuracion ' + error.toString());
+                this.showError = true;
+            }
+        );
+
+    }
+}

@@ -1,0 +1,11 @@
+<div *ngIf="showError;">
+	<p>Error: {{errorMessage}}</p>
+</div>
+<div *ngIf="! (userName === undefined)">
+	<h4>Bienvenido {{userName}}</h4>
+</div>
+<user-files [userElements]="userElements"></user-files>
+
+
+
+
