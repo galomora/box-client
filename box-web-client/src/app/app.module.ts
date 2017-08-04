@@ -10,6 +10,8 @@ import { RootComponent } from './root.component';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
 import { UserFilesComponent } from './user.files.component';
+import { UserProjectsComponent } from './user.projects.component';
+import { ErrorManagerService } from './error.manager.service';
 
 const appRoutes: Routes = [
   { path: 'loggedin', component: LoginComponent },
@@ -21,7 +23,8 @@ const appRoutes: Routes = [
     RootComponent,
     AppComponent,
     LoginComponent,
-    UserFilesComponent
+    UserFilesComponent,
+    UserProjectsComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,7 @@ const appRoutes: Routes = [
       { enableTracing: true } // debugging purposes only
     )
   ],
-  providers: [CookieService],
+  providers: [CookieService, ErrorManagerService],
   bootstrap: [RootComponent]
 })
 export class AppModule { }

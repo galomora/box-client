@@ -8,6 +8,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 import { BoxClientService } from './box.client.service';
+import { ErrorManagerService } from './error.manager.service';
 import { UserElement } from './user.element';
 import { BoxAppConfig } from './box.app.config';
 import { BoxItemInfo } from './box.item.info';
@@ -15,14 +16,17 @@ import { BoxItemInfo } from './box.item.info';
 
 @Injectable()
 export class UserFilesService {
+        
+    static PROJECTS_FOLDER_NAME = '02. SWS';
 
-    constructor(private boxClientService: BoxClientService) { }
+    constructor(private boxClientService: BoxClientService, 
+    private errorManagerService : ErrorManagerService) { }
 
     /**
      * Cambiar forma de obtener directorios de proyectos a partir del directorio raiz
      * Se debe tener un estandar
      */
-    getProjectFoldersFromRoot(rootFolderInfo: any): Array<BoxItemInfo> {
+    getSubfoldersFromFolder(rootFolderInfo: any): Array<BoxItemInfo> {
         let entries: Array<any> = rootFolderInfo.item_collection.entries;
         let folders: Array<any> = entries.filter(
             function(entry) {
@@ -42,7 +46,46 @@ export class UserFilesService {
     }
 
     // carpetas retornan un json como any
+    
+    getProjectFolders (boxClient: any, projectFoldersArray : Array<BoxItemInfo>) {
+        this.getRootFolder(boxClient).subscribe(
+            rootFolderInfo => {
+                let projectsFolderId = this.getProjectsRootFolderId (rootFolderInfo);
+                this.getFolder (projectsFolderId, boxClient).subscribe (
+                    projectsParentFolder => {
+                        let projectFolders = this.getSubfoldersFromFolder (projectsParentFolder);
+                        console.log ('cuantos ' + projectFolders.length);
+                        projectFolders.forEach (projectFolder => {
+                            projectFoldersArray.push(projectFolder);  
+                        });
+                        
+                    }, error => {
+                        console.log('Error consultar directorios de proyectos ' + error.toString());
+                        return this.errorManagerService.handleErrorObservable(error);
+                    }
+                );
+            },
+            error => {
+                console.log('Error consultar directorios ' + error.toString());
+                return this.errorManagerService.handleErrorObservable(error);
+            }
+        );
+    }
+    
+    private getProjectsRootFolderId(rootFolderInfo: any): string {
+        let subfolders: Array<BoxItemInfo> = this.getSubfoldersFromFolder(rootFolderInfo);
+        let projectsFolderId: string = '0';
+        subfolders.forEach(folder => {
+            if (folder.name === UserFilesService.PROJECTS_FOLDER_NAME) {
+                projectsFolderId = folder.id;
+            }
+        });
+        console.log('projects root id ' + projectsFolderId);
+        return projectsFolderId;
+    }
 
+    
+    
     getRootFolder(boxClient: any): Observable<any> {
         return this.getFolder('0', boxClient);
     }

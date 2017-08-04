@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 import { UserFilesService } from './user.files.service';
 import { BoxClientService } from './box.client.service';
 import { UserElement } from './user.element';
+import { BoxItemInfo } from './box.item.info';
 
 @Component({
     selector: 'login',
@@ -25,7 +26,8 @@ export class LoginComponent implements OnInit {
     boxAppConfig: BoxAppConfig;
     showError: boolean = false;
     userName: string;
-    userElements: Array<UserElement> = [];
+    
+    projectFolders : Array<BoxItemInfo> = [];
 
     constructor(private boxLoginService: BoxLoginService,
         private userService: UserService,
@@ -51,7 +53,7 @@ export class LoginComponent implements OnInit {
                 console.log('no se debe hacer login con el mismo token anterior');
                 // no se debe hacer login con el mismo token anterior
                 this.getUserInfo();
-                this.getUserFolders();
+                this.getProjects ();
             }
         }
     }
@@ -78,7 +80,7 @@ export class LoginComponent implements OnInit {
                 this.boxLoginService.setUserCookie(loggedUserToken);
                 this.boxLoginService.setLoginTokenCookie(this.userLoginToken);
                 this.getUserInfo();
-                this.getUserFolders();
+                this.getProjects ();
             },
             error => {
                 this.errorMessage = error.toString();
@@ -118,21 +120,14 @@ export class LoginComponent implements OnInit {
         );
     }
 
-    private getUserFolders() {
+    
+    private getProjects () {
+        this.projectFolders = [];
         this.boxLoginService.getBoxAppConfig().subscribe(
             boxConfig => {
                 this.boxAppConfig = boxConfig;
                 let boxClient = this.boxClientService.getClient(this.boxAppConfig);
-                this.userFilesService.getRootFolder(boxClient).subscribe(
-                    rootFolderInfo => {
-                        this.userFilesService.getFolderElements(rootFolderInfo, this.userElements, boxClient);
-                    },
-                    error => {
-                        this.errorMessage = error.toString();
-                        console.log('Error consultar directorios ' + error.toString());
-                        this.showError = true;
-                    }
-                );
+                this.userFilesService.getProjectFolders(boxClient, this.projectFolders);
             },
             error => {
                 this.errorMessage = error.toString();
@@ -140,6 +135,5 @@ export class LoginComponent implements OnInit {
                 this.showError = true;
             }
         );
-
-    }
+        }
 }
