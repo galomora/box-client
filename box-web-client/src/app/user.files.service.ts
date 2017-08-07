@@ -17,7 +17,7 @@ import { BoxItemInfo } from './box.item.info';
 @Injectable()
 export class UserFilesService {
         
-    static PROJECTS_FOLDER_NAME = '02. SWS';
+    static PROJECTS_FOLDER_NAME = '02.SWS';
 
     constructor(private boxClientService: BoxClientService, 
     private errorManagerService : ErrorManagerService) { }

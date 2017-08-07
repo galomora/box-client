@@ -65,9 +65,7 @@ export class LoginComponent implements OnInit {
                 this.getAuthorization();
             },
             error => {
-                this.errorMessage = error.toString();
-                console.log('Error obtener configuracion ' + error.toString());
-                this.showError = true;
+                this.displayError (error, 'Error obtener configuracion');
             }
         );
     }
@@ -83,9 +81,7 @@ export class LoginComponent implements OnInit {
                 this.getProjects ();
             },
             error => {
-                this.errorMessage = error.toString();
-                console.log('Error obtener autenticacion ' + error.toString());
-                this.showError = true;
+                this.displayError (error, 'Error obtener autenticacion');
             }
         );
     }
@@ -97,9 +93,7 @@ export class LoginComponent implements OnInit {
                 this.getBoxUser();
             },
             error => {
-                this.errorMessage = error.toString();
-                console.log('Error obtener configuracion ' + error.toString());
-                this.showError = true;
+                this.displayError (error, 'Error obtener configuracion');
             }
         );
 
@@ -113,15 +107,13 @@ export class LoginComponent implements OnInit {
                 this.userName = userInfo.name;
             },
             error => {
-                this.errorMessage = error.toString();
-                console.log('Error obtener info de usuario ' + error.toString());
-                this.showError = true;
+                this.displayError (error, 'Error obtener info de usuario');
             }
         );
     }
 
     
-    private getProjects () {
+    private getProjects() {
         this.projectFolders = [];
         this.boxLoginService.getBoxAppConfig().subscribe(
             boxConfig => {
@@ -130,10 +122,14 @@ export class LoginComponent implements OnInit {
                 this.userFilesService.getProjectFolders(boxClient, this.projectFolders);
             },
             error => {
-                this.errorMessage = error.toString();
-                console.log('Error obtener configuracion ' + error.toString());
-                this.showError = true;
+                this.displayError (error, 'Error obtener configuracion');
             }
         );
-        }
+    }
+    
+    private displayError(error: any, errorMessage: string) {
+        this.errorMessage = error.toString();
+        console.log(errorMessage + ' ' + error.toString());
+        this.showError = true;
+    }
 }
