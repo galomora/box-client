@@ -10,7 +10,6 @@ import { NgIf } from '@angular/common';
   providers: [BoxLoginService]
 })
 export class AppComponent implements OnInit {
-  title = 'Box Client';
   boxLoginURL: string;
   config: BoxAppConfig = new BoxAppConfig();
   errorMessage: string;

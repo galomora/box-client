@@ -54,7 +54,6 @@ export class UserFilesService {
                 this.getFolder (projectsFolderId, boxClient).subscribe (
                     projectsParentFolder => {
                         let projectFolders = this.getSubfoldersFromFolder (projectsParentFolder);
-                        console.log ('cuantos ' + projectFolders.length);
                         projectFolders.forEach (projectFolder => {
                             projectFoldersArray.push(projectFolder);  
                         });
@@ -135,7 +134,7 @@ export class UserFilesService {
     }
 
     private mapFolderElement(itemInfo: any): UserElement {
-        console.log('dirJson ' + JSON.stringify(itemInfo));
+//        console.log('dirJson ' + JSON.stringify(itemInfo));
         let element: UserElement = new UserElement();
         element.id = itemInfo.id;
         element.name = itemInfo.name;
@@ -148,7 +147,7 @@ export class UserFilesService {
     }
 
     private mapFileElement(itemInfo: any): UserElement {
-        console.log('fileJson ' + JSON.stringify(itemInfo));
+//        console.log('fileJson ' + JSON.stringify(itemInfo));
         let element: UserElement = new UserElement();
         element.id = itemInfo.id;
         element.name = itemInfo.name;
