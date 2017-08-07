@@ -14,6 +14,7 @@ import { UserProjectsComponent } from './user.projects.component';
 import { ErrorManagerService } from './error.manager.service';
 
 const appRoutes: Routes = [
+    { path: 'init', component: AppComponent },
   { path: 'loggedin', component: LoginComponent },
   { path: '', component: AppComponent }
 ];
