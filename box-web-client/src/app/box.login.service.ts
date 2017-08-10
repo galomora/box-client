@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/from';
 
 import { BoxAppConfig } from './box.app.config';
 import { BoxAuthInfo } from './box.auth.info';
@@ -16,20 +17,11 @@ export class BoxLoginService {
   static BOX_AUTH_URL = 'https://api.box.com/oauth2/token';
   static USER_TOKEN = 'USER_TOKEN';
   static LOGIN_TOKEN = 'LOGIN_TOKEN';
+  static TIME_SET = 'TIME_SET';
+  static EXPIRE_IN_SECONDS = 'EXPIRE_IN_SECONDS';
+    
 
   constructor(private cookieService: CookieService, private http: Http) { }
-
-//  executeLogin(userToken: String, boxAppConfig: BoxAppConfig) {
-//    let body = this.createAuthParams(userToken, boxAppConfig);
-//    let authInfoObservable = this.getAuthorizationInfo (userToken, boxAppConfig);
-//    authInfoObservable.subscribe(response => {
-//      this.setCookie(response.access_token);
-//    }, error => {
-//      console.log(JSON.stringify(error.json()));
-//      throw error;
-//    }
-//    )
-//  }
 
   getAuthorizationInfo (userToken: String, boxAppConfig: BoxAppConfig) : Observable<BoxAuthInfo> {
     let body = this.createAuthParams(userToken, boxAppConfig);
@@ -116,8 +108,6 @@ export class BoxLoginService {
   
   isnewLogin (newToken : string) {
     let lastLoginToken = this.getLastLoginToken ();
-    console.log ('new ' + newToken);
-    console.log ('last ' + lastLoginToken);
     if (lastLoginToken === undefined) {
       return true;
     } else {
@@ -130,8 +120,12 @@ export class BoxLoginService {
     }
   }
 
-  setUserCookie(userLoggedToken: string) {
-    this.setCookieString (BoxLoginService.USER_TOKEN, userLoggedToken);
+  setAuthInfoCookie(authInfo : BoxAuthInfo) {
+    this.setCookieString (BoxLoginService.USER_TOKEN, authInfo.accessToken);
+      let currentDate : Date = new Date ();
+      let currentMillis : number = currentDate.getTime ();
+    this.setCookieObject (BoxLoginService.TIME_SET, currentMillis);
+    this.setCookieObject (BoxLoginService.EXPIRE_IN_SECONDS, authInfo.expiresIn);
   }
   
   setLoginTokenCookie (loginToken : string) {
@@ -139,6 +133,10 @@ export class BoxLoginService {
   }
   
   setCookieString(key : string, value: string) {
+    this.cookieService.set(key, value);
+  }
+    
+  setCookieObject(key : string, value: any) {
     this.cookieService.set(key, value);
   }
   
@@ -149,4 +147,23 @@ export class BoxLoginService {
   getUserToken () : string {
     return this.cookieService.get(BoxLoginService.USER_TOKEN);
   }
+    
+  getMinutesToExpire () : number {
+      let startTime : Date = new Date ( Number (this.cookieService.get(BoxLoginService.TIME_SET))); 
+      if (startTime === undefined || startTime === null) { return 0; }
+      let secsToExpire : number = Number (this.cookieService.get(BoxLoginService.EXPIRE_IN_SECONDS));
+      let expireTime : Date = new Date (startTime.getTime () + (secsToExpire * 1000));
+      let currentDate : Date  = new Date (); 
+      if (expireTime.getTime () < currentDate.getTime ()) { return -1;}
+      let minutesLeft : number = (expireTime.getTime () - currentDate.getTime ()) / 60000;
+      return Number (minutesLeft.toFixed ());
+  }
+   
+  getMinutesExpireObservable () : Observable<number> {
+      let array : Array<number> = [];
+      console.log('mte ' + this.getMinutesToExpire ());
+      array.push (this.getMinutesToExpire ());
+      return Observable.from (array);
+  }
+  
 }

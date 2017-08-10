@@ -10,6 +10,7 @@ import { UserFilesService } from './user.files.service';
 import { BoxClientService } from './box.client.service';
 import { UserElement } from './user.element';
 import { BoxItemInfo } from './box.item.info';
+import { BoxAuthInfo } from './box.auth.info';
 
 @Component({
     selector: 'login',
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
     boxAppConfig: BoxAppConfig;
     showError: boolean = false;
     userName: string;
+    minutesToExpire : number;
     
     projectFolders : Array<BoxItemInfo> = [];
 
@@ -56,6 +58,8 @@ export class LoginComponent implements OnInit {
                 this.getProjects ();
             }
         }
+        this.getExpireTimeEachMinute ();
+        
     }
 
     private executeLoginToBox() {
@@ -71,11 +75,11 @@ export class LoginComponent implements OnInit {
     }
 
     private getAuthorization() {
-        let loggedUserToken: string;
+//        let loggedUserToken: string;
         this.boxLoginService.getAuthorizationInfo(this.userLoginToken, this.boxAppConfig).subscribe(
-            authInfo => {
-                loggedUserToken = authInfo.accessToken;
-                this.boxLoginService.setUserCookie(loggedUserToken);
+            (authInfo : BoxAuthInfo) => {
+//                loggedUserToken = authInfo.accessToken;
+                this.boxLoginService.setAuthInfoCookie(authInfo);
                 this.boxLoginService.setLoginTokenCookie(this.userLoginToken);
                 this.getUserInfo();
                 this.getProjects ();
@@ -103,7 +107,6 @@ export class LoginComponent implements OnInit {
         if (!this.boxLoginService.isLoggedIn()) { return; }
         this.userService.getUser(this.boxAppConfig).subscribe(
             userInfo => {
-                console.log(' usuario ' + userInfo.name);
                 this.userName = userInfo.name;
             },
             error => {
@@ -131,5 +134,23 @@ export class LoginComponent implements OnInit {
         this.errorMessage = error.toString();
         console.log(errorMessage + ' ' + error.toString());
         this.showError = true;
+    }
+    
+    private getExpireTimeEachMinute () {
+//        setInterval (function () {
+//            this.boxLoginService.getMinutesExpireObservable ().subscribe(
+//        time => this.minutesToExpire = time);
+//            }, 10000);
+//            
+        this.boxLoginService.getMinutesExpireObservable ().subscribe(
+        time => this.minutesToExpire = time);
+        }
+        
+    
+    getExpireTime () {
+        console.log (' a ve tiempo');
+        console.log (this.boxLoginService.getMinutesToExpire ());
+        this.boxLoginService.getMinutesExpireObservable ().subscribe(
+        time => this.minutesToExpire = time);
     }
 }
