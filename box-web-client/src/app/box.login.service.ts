@@ -160,10 +160,11 @@ export class BoxLoginService {
   }
    
   getMinutesExpireObservable () : Observable<number> {
-      let array : Array<number> = [];
-      console.log('mte ' + this.getMinutesToExpire ());
-      array.push (this.getMinutesToExpire ());
-      return Observable.from (array);
+      return Observable.create (observer => {
+          setInterval (() => {
+              observer.next (this.getMinutesToExpire ());
+              }, 60000);
+          });
   }
   
 }
