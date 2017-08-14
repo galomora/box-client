@@ -3,7 +3,12 @@
 </div>
 <div *ngIf="! (userName === undefined)">
 	<h4>Bienvenido {{userName}}</h4>
-	<p>Su sesion expirara en {{minutesToExpire}} minutos</p>
+	<div *ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
+		<p>Su sesion expirar&aacute; en {{minutesToExpire}} minutos</p>
+	</div>
+	<div *ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
+		<p>Su sesion ha expirado</p>
+	</div>
 </div>
 <user-projects [userProjects]="projectFolders"></user-projects>
 

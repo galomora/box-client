@@ -160,6 +160,7 @@ export class BoxLoginService {
   }
    
   getMinutesExpireObservable () : Observable<number> {
+//      el valor se obtiene cada minuto
       return Observable.create (observer => {
           setInterval (() => {
               observer.next (this.getMinutesToExpire ());

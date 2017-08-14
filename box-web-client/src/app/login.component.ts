@@ -137,20 +137,9 @@ export class LoginComponent implements OnInit {
     }
     
     private getExpireTimeEachMinute () {
-//        setInterval (function () {
-//            this.boxLoginService.getMinutesExpireObservable ().subscribe(
-//        time => this.minutesToExpire = time);
-//            }, 10000);
-//            
+        this.minutesToExpire = this.boxLoginService.getMinutesToExpire ();
         this.boxLoginService.getMinutesExpireObservable ().subscribe(
-        time => this.minutesToExpire = time);
+            time => this.minutesToExpire = time);
         }
-        
     
-    getExpireTime () {
-        console.log (' a ve tiempo');
-        console.log (this.boxLoginService.getMinutesToExpire ());
-        this.boxLoginService.getMinutesExpireObservable ().subscribe(
-        time => this.minutesToExpire = time);
-    }
 }
