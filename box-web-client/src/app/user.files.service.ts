@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
-import { BoxClientService } from './box.client.service';
+import { BoxAppService } from './box.app.service';
 import { ErrorManagerService } from './error.manager.service';
 import { UserElement } from './user.element';
 import { BoxAppConfig } from './box.app.config';
@@ -19,8 +19,7 @@ export class UserFilesService {
         
     static PROJECTS_FOLDER_NAME = '02.SWS';
 
-    constructor(private boxClientService: BoxClientService, 
-    private errorManagerService : ErrorManagerService) { }
+    constructor(private errorManagerService : ErrorManagerService) { }
 
     /**
      * Cambiar forma de obtener directorios de proyectos a partir del directorio raiz

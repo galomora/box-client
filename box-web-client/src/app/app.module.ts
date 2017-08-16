@@ -12,6 +12,9 @@ import { UserFilesComponent } from './user.files.component';
 import { UserProjectsComponent } from './user.projects.component';
 import { ErrorManagerService } from './error.manager.service';
 import { RoutingModule } from './routing.module';
+import { SessionService } from './session.service';
+import { BoxLoginService } from './box.login.service';
+import { BoxAppService } from './box.app.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,7 @@ import { RoutingModule } from './routing.module';
     HttpModule,
     RoutingModule
   ],
-  providers: [CookieService, ErrorManagerService],
+  providers: [CookieService, ErrorManagerService, SessionService, BoxLoginService, BoxAppService],
   bootstrap: [RootComponent]
 })
 export class AppModule { }

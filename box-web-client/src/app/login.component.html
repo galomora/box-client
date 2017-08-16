@@ -5,6 +5,7 @@
 	<h4>Bienvenido {{userName}}</h4>
 	<div *ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
 		<p>Su sesion expirar&aacute; en {{minutesToExpire}} minutos</p>
+		<a (click)="refreshSession()">Renovar Sesi&oacute;n</a>
 	</div>
 	<div *ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
 		<p>Su sesion ha expirado</p>

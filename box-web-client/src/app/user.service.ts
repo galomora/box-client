@@ -1,5 +1,5 @@
 import { BoxAppConfig } from './box.app.config';
-import { BoxLoginService } from './box.login.service';
+import { SessionService } from './session.service';
 import { Injectable } from '@angular/core';
 import * as BoxSDKNode from 'box-node-sdk';
 import { Observable } from 'rxjs/Observable';
@@ -11,7 +11,7 @@ import 'rxjs/add/observable/fromPromise';
 @Injectable()
 export class UserService {
 
-    constructor(private boxLoginService: BoxLoginService) { }
+    constructor(private sessionService: SessionService) { }
 
     getUser(appConfig: BoxAppConfig) : Observable<any> {
         let boxSDK = new BoxSDKNode({
@@ -24,7 +24,7 @@ export class UserService {
             }
         }
         );
-        let userToken = this.boxLoginService.getUserToken();
+        let userToken = this.sessionService.getUserToken();
         let client = boxSDK.getBasicClient(userToken);
         let userPromise = client.users.get(client.CURRENT_USER_ID);
         return Observable.fromPromise (userPromise);

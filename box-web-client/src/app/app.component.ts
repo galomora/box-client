@@ -1,13 +1,16 @@
-import { BoxLoginService } from './box.login.service';
-import { BoxAppConfig } from './box.app.config';
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
+
+import { BoxLoginService } from './box.login.service';
+import { BoxAppService } from './box.app.service';
+import { BoxAppConfig } from './box.app.config';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [BoxLoginService]
+  providers: [BoxAppService]
 })
 export class AppComponent implements OnInit {
   boxLoginURL: string;
@@ -16,13 +19,13 @@ export class AppComponent implements OnInit {
   showError : boolean = false;
   linkGenerated : boolean = false;
 
-  constructor(private boxLoginService: BoxLoginService) {
+  constructor(private boxLoginService: BoxLoginService, private boxAppService: BoxAppService) {
     
   }
 
   ngOnInit(): void {
     this.showError = false;
-    this.boxLoginService.getBoxAppConfig().subscribe(
+    this.boxAppService.getBoxAppConfig().subscribe(
       boxConfig => {
         this.config = boxConfig;
         this.boxLoginURL = this.boxLoginService.generateBoxLoginURL(boxConfig);
