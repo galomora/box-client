@@ -81,7 +81,7 @@ export class SessionService {
         return Observable.create(observer => {
             setInterval(() => {
                 observer.next(this.getMinutesToExpire());
-            }, 60000);
+            }, 10000);
         });
     }
     
@@ -90,6 +90,14 @@ export class SessionService {
         this.setCookieObject(SessionService.TIME_SET, this.getCurrentTimeMillis ());
         this.setCookieObject(SessionService.EXPIRE_IN_SECONDS, this.getSecondsFromMillis (boxRefreshInfo.accessTokenTTLMS));
         this.setCookieString(SessionService.REFRESH_TOKEN, boxRefreshInfo.refreshToken);
+    }
+    
+    removeSessionCookies () {
+        this.cookieService.delete (SessionService.USER_TOKEN);
+        this.cookieService.delete (SessionService.TIME_SET);
+        this.cookieService.delete (SessionService.EXPIRE_IN_SECONDS);
+        this.cookieService.delete (SessionService.REFRESH_TOKEN);
+        
     }
     
     private getCurrentTimeMillis(): number {

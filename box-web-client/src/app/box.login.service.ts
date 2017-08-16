@@ -82,7 +82,6 @@ export class BoxLoginService {
   }
     
   refreshSession() : Observable<BoxRefreshInfo> {
-//      htmlResponse.map(response => this.mapBoxAuthInfo(response)).catch(this.errorManagerService.handleErrorObservable)
       return Observable.create(observer => {
           this.boxAppService.getBoxSDKFromConfig().subscribe(
               boxSDK => {
@@ -123,6 +122,38 @@ export class BoxLoginService {
       refreshInfo.accessTokenTTLMS = response.accessTokenTTLMS;
       refreshInfo.acquiredAtMS = response.acquiredAtMS;
       return refreshInfo;
+  }
+    
+  closeSession () : Observable<string> {
+      return Observable.create(observer => {
+      this.boxAppService.getBoxSDKFromConfig().subscribe(
+              boxSDK => {
+                  this.sendEndSession(boxSDK, this.sessionService.getAuthInfoCookie().refreshToken).subscribe(
+                      response => {
+                          observer.next (response);
+                      },
+                      error => {
+                          observer.error (error);
+                      }
+                  );
+              },
+              error => {
+                  observer.error (error);
+              }
+          );
+      });
+  }
+    
+  sendEndSession(boxSDK: any, userToken: string): Observable<string> {
+      return Observable.create(observer => {
+          boxSDK.revokeTokens(userToken, function(error) {
+              if (error) {
+                  observer.error(error);
+              } else {
+                  observer.next('Session was closed');
+              }
+          });
+      });
   }
      
 }

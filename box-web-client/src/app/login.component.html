@@ -5,8 +5,12 @@
 	<h4>Bienvenido {{userName}}</h4>
 	<div *ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
 		<p>Su sesion expirar&aacute; en {{minutesToExpire}} minutos</p>
-		<a (click)="refreshSession()">Renovar Sesi&oacute;n</a>
+		<a (click)="refreshSession()" class="pointer">Renovar Sesi&oacute;n</a>
+		
 	</div>
+	<nav>
+			<a [routerLink]="['/init']" [queryParams]="{logout: true}" >Close Session</a>
+		</nav>
 	<div *ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
 		<p>Su sesion ha expirado</p>
 	</div>

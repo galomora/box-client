@@ -67,6 +67,7 @@ export class LoginComponent implements OnInit {
     }
 
     private executeLoginToBox() {
+        this.sessionService.removeSessionCookies ();
         this.boxAppService.getBoxAppConfig().subscribe(
             boxConfig => {
                 this.boxAppConfig = boxConfig;

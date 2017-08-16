@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { BoxLoginService } from './box.login.service';
 import { BoxAppService } from './box.app.service';
 import { BoxAppConfig } from './box.app.config';
+import { SessionService } from './session.service';
+
 
 
 @Component({
@@ -16,29 +19,57 @@ export class AppComponent implements OnInit {
   boxLoginURL: string;
   config: BoxAppConfig = new BoxAppConfig();
   errorMessage: string;
+  infoMessage: string;
   showError : boolean = false;
   linkGenerated : boolean = false;
+  logoutParam: string;
 
-  constructor(private boxLoginService: BoxLoginService, private boxAppService: BoxAppService) {
-    
+  constructor(private boxLoginService: BoxLoginService, 
+  private boxAppService: BoxAppService,
+  private route: ActivatedRoute,
+  private sessionService: SessionService) {
   }
 
   ngOnInit(): void {
     this.showError = false;
-    this.boxAppService.getBoxAppConfig().subscribe(
-      boxConfig => {
-        this.config = boxConfig;
-        this.boxLoginURL = this.boxLoginService.generateBoxLoginURL(boxConfig);
-        this.linkGenerated = true;
-      },
-      error => {
+    this.logoutParam = this.route.snapshot.queryParams['logout'];
+    if (this.logoutParam !== undefined && this.logoutParam === 'true') {
+        
+        }
+    this.generateLoginBoxLink ();
+  }
+    
+  private generateLoginBoxLink() {
+      this.boxAppService.getBoxAppConfig().subscribe(
+          boxConfig => {
+              this.config = boxConfig;
+              this.boxLoginURL = this.boxLoginService.generateBoxLoginURL(boxConfig);
+              this.linkGenerated = true;
+          },
+          error => {
+              this.displayError(error, 'Error obtener config app');
+              this.linkGenerated = false;
+          }
+      );
+  }
+    
+    closeSession() {
+        this.boxLoginService.closeSession().subscribe(
+            (logoutInfo : string) => {
+                this.sessionService.removeSessionCookies ();
+                this.infoMessage = logoutInfo;
+            },
+            error => {
+                this.displayError(error, 'Error closing session');
+            }
+        );
+    }
+
+    private displayError (error : any, message:string) {
         this.errorMessage = error.toString();
         this.showError = true;
-        console.log('Error obtener configuracion ' + error.toString());
-        this.linkGenerated = false;
-      }
-    );
-  }
-
+        console.log(message + ' ' + error.toString());
+    }
+    
 }
 
