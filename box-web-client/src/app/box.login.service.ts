@@ -150,9 +150,9 @@ export class BoxLoginService {
       console.log ('el token ' + userToken);
 //      TODO no funciona revokeTokens, falla, but why??
 //      queda comentado hasta determinar el problema
+//      https://github.com/box/box-node-sdk#revoking-tokens
 //      return Observable.create(observer => {
-          boxSDK.revokeTokens(userToken, function(error, response) {
-              console.log ('response ' + JSON.stringify ( response));
+          boxSDK.revokeTokens(userToken, function(error) {
               if (error) {
 //                  observer.error(error);
                   console.log ('error cerrando sesion ' + JSON.stringify ( error));
