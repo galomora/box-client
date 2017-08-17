@@ -55,12 +55,10 @@ export class AppComponent implements OnInit {
   }
     
     closeSession() {
-        console.log ('a cerrar');
         this.boxLoginService.closeSession().subscribe(
             (logoutInfo : string) => {
-                console.log ('cierra');
                 this.sessionService.removeSessionCookies ();
-                this.infoMessage = 'Session Finished ' + logoutInfo;
+                this.infoMessage = 'Session Finished ' + (logoutInfo === undefined ? '': (': ' + logoutInfo));
             },
             error => {
                 this.displayError(error, 'Error closing session');
