@@ -81,7 +81,7 @@ export class SessionService {
         return Observable.create(observer => {
             setInterval(() => {
                 observer.next(this.getMinutesToExpire());
-            }, 10000);
+            }, 60000);
         });
     }
     
