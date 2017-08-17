@@ -128,8 +128,10 @@ export class BoxLoginService {
       return Observable.create(observer => {
       this.boxAppService.getBoxSDKFromConfig().subscribe(
               boxSDK => {
-                  this.sendEndSession(boxSDK, this.sessionService.getAuthInfoCookie().refreshToken).subscribe(
+                  this.sendEndSession(boxSDK, this.sessionService.getAuthInfoCookie().accessToken).subscribe(
                       response => {
+                          console.log ('se cerro ' + response);
+                          this.sessionService.removeSessionCookies ();
                           observer.next (response);
                       },
                       error => {
@@ -145,15 +147,24 @@ export class BoxLoginService {
   }
     
   sendEndSession(boxSDK: any, userToken: string): Observable<string> {
-      return Observable.create(observer => {
-          boxSDK.revokeTokens(userToken, function(error) {
+      console.log ('el token ' + userToken);
+//      TODO no funciona revokeTokens, falla, but why??
+//      queda comentado hasta determinar el problema
+//      return Observable.create(observer => {
+          boxSDK.revokeTokens(userToken, function(error, response) {
+              console.log ('response ' + JSON.stringify ( response));
               if (error) {
-                  observer.error(error);
+//                  observer.error(error);
+                  console.log ('error cerrando sesion ' + JSON.stringify ( error));
               } else {
-                  observer.next('Session was closed');
+//                  observer.next('Session was closed');
               }
           });
-      });
+//      });
+      
+      return Observable.create(observer => {
+          observer.next ('Session was closed');
+          });
   }
      
 }

@@ -52,6 +52,9 @@ export class BoxAppService {
         let boxSDK = new BoxSDKNode({
             clientID: appConfig.clientID,
             clientSecret: appConfig.clientSecret,
+            request: {
+                strictSSL: false,
+            },
             appAuth: {
                 keyID: appConfig.appAuth.publicKeyID,
                 privateKey: appConfig.appAuth.privateKey,

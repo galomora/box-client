@@ -33,9 +33,10 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.showError = false;
     this.logoutParam = this.route.snapshot.queryParams['logout'];
-    if (this.logoutParam !== undefined && this.logoutParam === 'true') {
-        
-        }
+      console.log (this.logoutParam + this.sessionService.isLoggedIn());
+    if (this.logoutParam !== undefined && this.logoutParam === 'true' && this.sessionService.isLoggedIn()) {
+        this.closeSession();
+    }
     this.generateLoginBoxLink ();
   }
     
@@ -54,10 +55,12 @@ export class AppComponent implements OnInit {
   }
     
     closeSession() {
+        console.log ('a cerrar');
         this.boxLoginService.closeSession().subscribe(
             (logoutInfo : string) => {
+                console.log ('cierra');
                 this.sessionService.removeSessionCookies ();
-                this.infoMessage = logoutInfo;
+                this.infoMessage = 'Session Finished ' + logoutInfo;
             },
             error => {
                 this.displayError(error, 'Error closing session');
