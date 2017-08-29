@@ -1,21 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { URLSearchParams, QueryEncoder, Http } from '@angular/http';
-
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/map' // map
+
 import { BoxAppConfig } from './box.app.config';
 import { BoxLoginService } from './box.login.service';
 import { UserService } from './user.service';
 import { UserFilesService } from './user.files.service';
-import { BoxClientService } from './box.client.service';
+import { BoxAppService } from './box.app.service';
+import { SessionService } from './session.service';
 import { UserElement } from './user.element';
 import { BoxItemInfo } from './box.item.info';
+import { BoxAuthInfo } from './box.auth.info';
+import { BoxRefreshInfo } from './box.refresh.info';
+
 
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
     styleUrls: ['./app.component.css'],
-    providers: [BoxLoginService, UserService, UserFilesService, BoxClientService]
+    providers: [BoxLoginService, UserService, UserFilesService, BoxAppService, SessionService]
 })
 
 export class LoginComponent implements OnInit {
@@ -26,6 +30,7 @@ export class LoginComponent implements OnInit {
     boxAppConfig: BoxAppConfig;
     showError: boolean = false;
     userName: string;
+    minutesToExpire : number;
     
     projectFolders : Array<BoxItemInfo> = [];
 
@@ -33,7 +38,8 @@ export class LoginComponent implements OnInit {
         private userService: UserService,
         private userFilesService: UserFilesService,
         private route: ActivatedRoute,
-        private boxClientService: BoxClientService) {
+        private boxAppService: BoxAppService, 
+        private sessionService: SessionService) {
     }
 
     ngOnInit(): void {
@@ -56,10 +62,13 @@ export class LoginComponent implements OnInit {
                 this.getProjects ();
             }
         }
+        this.getExpireTimeEachMinute ();
+        
     }
 
     private executeLoginToBox() {
-        this.boxLoginService.getBoxAppConfig().subscribe(
+        this.sessionService.removeSessionCookies ();
+        this.boxAppService.getBoxAppConfig().subscribe(
             boxConfig => {
                 this.boxAppConfig = boxConfig;
                 this.getAuthorization();
@@ -71,12 +80,11 @@ export class LoginComponent implements OnInit {
     }
 
     private getAuthorization() {
-        let loggedUserToken: string;
+//        let loggedUserToken: string;
         this.boxLoginService.getAuthorizationInfo(this.userLoginToken, this.boxAppConfig).subscribe(
-            authInfo => {
-                loggedUserToken = authInfo.accessToken;
-                this.boxLoginService.setUserCookie(loggedUserToken);
-                this.boxLoginService.setLoginTokenCookie(this.userLoginToken);
+            (authInfo : BoxAuthInfo) => {
+                this.sessionService.setAuthInfoCookie(authInfo);
+                this.sessionService.setLoginTokenCookie(this.userLoginToken);
                 this.getUserInfo();
                 this.getProjects ();
             },
@@ -87,7 +95,7 @@ export class LoginComponent implements OnInit {
     }
 
     private getUserInfo() {
-        this.boxLoginService.getBoxAppConfig().subscribe(
+        this.boxAppService.getBoxAppConfig().subscribe(
             boxConfig => {
                 this.boxAppConfig = boxConfig;
                 this.getBoxUser();
@@ -100,10 +108,9 @@ export class LoginComponent implements OnInit {
     }
 
     private getBoxUser() {
-        if (!this.boxLoginService.isLoggedIn()) { return; }
+        if (!this.sessionService.isLoggedIn()) { return; }
         this.userService.getUser(this.boxAppConfig).subscribe(
             userInfo => {
-                console.log(' usuario ' + userInfo.name);
                 this.userName = userInfo.name;
             },
             error => {
@@ -115,10 +122,10 @@ export class LoginComponent implements OnInit {
     
     private getProjects() {
         this.projectFolders = [];
-        this.boxLoginService.getBoxAppConfig().subscribe(
+        this.boxAppService.getBoxAppConfig().subscribe(
             boxConfig => {
                 this.boxAppConfig = boxConfig;
-                let boxClient = this.boxClientService.getClient(this.boxAppConfig);
+                let boxClient = this.boxAppService.getClient(this.boxAppConfig);
                 this.userFilesService.getProjectFolders(boxClient, this.projectFolders);
             },
             error => {
@@ -132,4 +139,21 @@ export class LoginComponent implements OnInit {
         console.log(errorMessage + ' ' + error.toString());
         this.showError = true;
     }
+    
+    private getExpireTimeEachMinute() {
+        this.sessionService.getMinutesExpireObservable().subscribe(
+            time => this.minutesToExpire = time);
+    }
+
+    refreshSession() {
+        this.boxLoginService.refreshSession().subscribe(
+            (refreshInfo : BoxRefreshInfo) => {
+                this.sessionService.refreshSessionCookie (refreshInfo);
+            },
+            error => {
+                this.displayError (error, 'Error actualizar sesion');
+            }
+        );
+    }
+    
 }

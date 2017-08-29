@@ -2,8 +2,8 @@ import { Component, Input } from '@angular/core';
 import { URLSearchParams, QueryEncoder, Http } from '@angular/http';
 
 import { BoxLoginService } from './box.login.service';
-import { BoxClientService } from './box.client.service';
 import { UserFilesService } from './user.files.service';
+import { BoxAppService } from './box.app.service';
 import { BoxItemInfo } from './box.item.info';
 import { BoxAppConfig } from './box.app.config';
 import { UserElement } from './user.element';
@@ -13,7 +13,7 @@ import { UserElement } from './user.element';
     selector: 'user-projects',
     templateUrl: './user.projects.html',
     styleUrls: ['./app.component.css'],
-    providers: [BoxLoginService, BoxClientService]
+    providers: [BoxLoginService, BoxAppService]
 })
 
 export class UserProjectsComponent {
@@ -27,7 +27,7 @@ export class UserProjectsComponent {
     
     constructor(private boxLoginService: BoxLoginService,
         private userFilesService: UserFilesService,
-        private boxClientService: BoxClientService) {
+        private boxAppService: BoxAppService) {
     }
     
     selectProject (projectFolder) {
@@ -37,10 +37,10 @@ export class UserProjectsComponent {
     
     private getSelectedProjectFolders() {
         this.userElements = [];
-        this.boxLoginService.getBoxAppConfig().subscribe(
+        this.boxAppService.getBoxAppConfig().subscribe(
             boxConfig => {
                 this.boxAppConfig = boxConfig;
-                let boxClient = this.boxClientService.getClient(this.boxAppConfig);
+                let boxClient = this.boxAppService.getClient(this.boxAppConfig);
                 this.userFilesService.getFolder(this.selectedProject.id, boxClient).subscribe(
                     rootFolderInfo => {
                         this.userFilesService.getFolderElements(rootFolderInfo, this.userElements, boxClient);

@@ -1,7 +1,9 @@
 <div *ngIf="showError;">
 	<p>Error: {{errorMessage}}</p>
 </div>
-
+<div>
+<p>{{infoMessage}}</p>
+</div>
 <div *ngIf="linkGenerated; else notGeneratedBlock">
 <a href="{{boxLoginURL}}">Login to Box</a>
 </div>

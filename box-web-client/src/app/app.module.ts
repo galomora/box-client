@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms'; //  NgModel lives here
 import { HttpModule } from '@angular/http';
-import { RouterModule, Routes } from '@angular/router';
 
 import { CookieService } from 'ngx-cookie-service';
 
@@ -12,12 +11,10 @@ import { LoginComponent } from './login.component';
 import { UserFilesComponent } from './user.files.component';
 import { UserProjectsComponent } from './user.projects.component';
 import { ErrorManagerService } from './error.manager.service';
-
-const appRoutes: Routes = [
-    { path: 'init', component: AppComponent },
-  { path: 'loggedin', component: LoginComponent },
-  { path: '', component: AppComponent }
-];
+import { RoutingModule } from './routing.module';
+import { SessionService } from './session.service';
+import { BoxLoginService } from './box.login.service';
+import { BoxAppService } from './box.app.service';
 
 @NgModule({
   declarations: [
@@ -31,12 +28,9 @@ const appRoutes: Routes = [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(
-      appRoutes,
-      { enableTracing: true } // debugging purposes only
-    )
+    RoutingModule
   ],
-  providers: [CookieService, ErrorManagerService],
+  providers: [CookieService, ErrorManagerService, SessionService, BoxLoginService, BoxAppService],
   bootstrap: [RootComponent]
 })
 export class AppModule { }

@@ -1,41 +1,37 @@
 import { Injectable } from '@angular/core';
 import { URLSearchParams, QueryEncoder, Http, Response } from '@angular/http';
-import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/observable/from';
 
 import { BoxAppConfig } from './box.app.config';
 import { BoxAuthInfo } from './box.auth.info';
+import { BoxRefreshInfo } from './box.refresh.info';
+import { ErrorManagerService } from './error.manager.service';
+import { SessionService } from './session.service';
+import { BoxAppService } from './box.app.service';
+
 
 @Injectable()
 export class BoxLoginService {
 
   static BOX_LOGIN_URL = 'https://account.box.com/api/oauth2/authorize';
   static BOX_AUTH_URL = 'https://api.box.com/oauth2/token';
-  static USER_TOKEN = 'USER_TOKEN';
-  static LOGIN_TOKEN = 'LOGIN_TOKEN';
+  
+    
 
-  constructor(private cookieService: CookieService, private http: Http) { }
-
-//  executeLogin(userToken: String, boxAppConfig: BoxAppConfig) {
-//    let body = this.createAuthParams(userToken, boxAppConfig);
-//    let authInfoObservable = this.getAuthorizationInfo (userToken, boxAppConfig);
-//    authInfoObservable.subscribe(response => {
-//      this.setCookie(response.access_token);
-//    }, error => {
-//      console.log(JSON.stringify(error.json()));
-//      throw error;
-//    }
-//    )
-//  }
+  constructor(private http: Http, 
+    private errorManagerService : ErrorManagerService,
+    private sessionService : SessionService, 
+    private boxAppService : BoxAppService) { }
 
   getAuthorizationInfo (userToken: String, boxAppConfig: BoxAppConfig) : Observable<BoxAuthInfo> {
     let body = this.createAuthParams(userToken, boxAppConfig);
     let htmlResponse = this.
       http.post(BoxLoginService.BOX_AUTH_URL, body);
-    return htmlResponse.map(response => this.mapBoxAuthInfo(response)).catch(this.handleError);
+    return htmlResponse.map(response => this.mapBoxAuthInfo(response)).catch(this.errorManagerService.handleErrorObservable);
   }
 
   private createAuthParams(userToken: String, boxAppConfig: BoxAppConfig): String {
@@ -45,12 +41,6 @@ export class BoxLoginService {
     urlSearchParams.append('client_id', boxAppConfig.clientID.toString());
     urlSearchParams.append('client_secret', boxAppConfig.clientSecret.toString());
     return urlSearchParams.toString();
-  }
-
-  private extractData(res: Response) {
-    let body = res.json();
-    // TODO ver si es mejor con este objeto
-    return body.data || {};
   }
   
   private mapBoxAuthInfo (response: Response) {
@@ -65,38 +55,6 @@ export class BoxLoginService {
     return authInfo;
   }
 
-  private mapConfig(response: Response) {
-    let config: BoxAppConfig = new BoxAppConfig();
-    let jsonResponse = response.json();
-    // obtener config de aplicacion box
-    config.clientID = jsonResponse.boxAppSettings.clientID;
-    config.clientSecret = jsonResponse.boxAppSettings.clientSecret;
-    config.enterpriseID = jsonResponse.enterpriseID;
-    config.appAuth.passphrase = jsonResponse.boxAppSettings.appAuth.passphrase;
-    config.appAuth.publicKeyID = jsonResponse.boxAppSettings.appAuth.publicKeyID;
-    config.appAuth.privateKey = jsonResponse.boxAppSettings.appAuth.privateKey;
-    return config;
-  }
-
-  getBoxAppConfig(): Observable<any> {
-    return this.http.get('assets/config.box.json')
-      .map(response => this.mapConfig(response)).catch(this.handleError);
-  }
-
-  private handleError(error: Response | any) {
-    // In a real world app, you might use a remote logging infrastructure
-    let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
-    }
-    console.error(errMsg);
-    return Observable.throw(errMsg);
-  }
-
   private createBoxAccessParams(boxAppConfig: BoxAppConfig): String {
     let urlSearchParams = new URLSearchParams();
     urlSearchParams.append('response_type', 'code');
@@ -108,16 +66,9 @@ export class BoxLoginService {
     return BoxLoginService.BOX_LOGIN_URL + '?' + this.createBoxAccessParams(boxAppConfig);
   }
   
-  isLoggedIn () : boolean {
-    let token = this.cookieService.get(BoxLoginService.USER_TOKEN);
-//    TODO verificar expiracion
-    return (! (token === undefined));
-  }
-  
   isnewLogin (newToken : string) {
-    let lastLoginToken = this.getLastLoginToken ();
-    console.log ('new ' + newToken);
-    console.log ('last ' + lastLoginToken);
+      //TODO quitar session service??
+    let lastLoginToken = this.sessionService.getLastLoginToken ();
     if (lastLoginToken === undefined) {
       return true;
     } else {
@@ -129,24 +80,91 @@ export class BoxLoginService {
       }
     }
   }
-
-  setUserCookie(userLoggedToken: string) {
-    this.setCookieString (BoxLoginService.USER_TOKEN, userLoggedToken);
+    
+  refreshSession() : Observable<BoxRefreshInfo> {
+      return Observable.create(observer => {
+          this.boxAppService.getBoxSDKFromConfig().subscribe(
+              boxSDK => {
+                  this.sendRefreshToken(boxSDK, this.sessionService.getAuthInfoCookie().refreshToken).subscribe(
+                      response => {
+                          observer.next (response);
+                      },
+                      error => {
+                          observer.error (error);
+                      }
+                  );
+              },
+              error => {
+                  observer.error (error);
+              }
+          );
+      }); //end create
   }
-  
-  setLoginTokenCookie (loginToken : string) {
-    this.setCookieString (BoxLoginService.LOGIN_TOKEN, loginToken);
+    
+  sendRefreshToken(boxSDK: any, refreshToken: string): Observable<BoxRefreshInfo> {
+      return Observable.create(observer => {
+          boxSDK.getTokensRefreshGrant(refreshToken, function(error, tokenInfo) {
+              if (error) {
+                  observer.error (error);
+              } else {
+                  let refreshInfo: BoxRefreshInfo = BoxLoginService.mapBoxRefreshInfo (tokenInfo); 
+                observer.next (refreshInfo);    
+              }
+          });
+      });
   }
-  
-  setCookieString(key : string, value: string) {
-    this.cookieService.set(key, value);
+    
+  private static mapBoxRefreshInfo(response: any) : BoxRefreshInfo {
+      let refreshInfo: BoxRefreshInfo = new BoxRefreshInfo();
+      // obtener config de aplicacion box
+      refreshInfo.accessToken = response.accessToken;
+      refreshInfo.refreshToken = response.refreshToken;
+      refreshInfo.accessTokenTTLMS = response.accessTokenTTLMS;
+      refreshInfo.acquiredAtMS = response.acquiredAtMS;
+      return refreshInfo;
   }
-  
-  getLastLoginToken () : string {
-    return this.cookieService.get(BoxLoginService.LOGIN_TOKEN);
+    
+  closeSession () : Observable<string> {
+      return Observable.create(observer => {
+      this.boxAppService.getBoxSDKFromConfig().subscribe(
+              boxSDK => {
+                  this.sendEndSession(boxSDK, this.sessionService.getAuthInfoCookie().accessToken).subscribe(
+                      response => {
+                          console.log ('se cerro ' + response);
+                          this.sessionService.removeSessionCookies ();
+                          observer.next (response);
+                      },
+                      error => {
+                          observer.error (error);
+                      }
+                  );
+              },
+              error => {
+                  observer.error (error);
+              }
+          );
+      });
   }
-  
-  getUserToken () : string {
-    return this.cookieService.get(BoxLoginService.USER_TOKEN);
+    
+  sendEndSession(boxSDK: any, userToken: string): Observable<string> {
+      console.log ('el token ' + userToken);
+//      TODO no funciona revokeTokens, falla, but why??
+//      queda comentado hasta determinar el problema
+//      https://github.com/box/box-node-sdk#revoking-tokens
+//      return Observable.create(observer => {
+          boxSDK.revokeTokens(userToken, function(error) {
+              if (error) {
+//                  observer.error(error);
+                  console.log ('error cerrando sesion ' + JSON.stringify ( error));
+              } else {
+//                  observer.next('Session was closed');
+              }
+          });
+//      });
+      
+      return Observable.create(observer => {
+          observer.next ('Session was closed');
+          });
   }
+     
 }
