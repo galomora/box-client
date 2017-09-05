@@ -12,7 +12,7 @@ import { UserElement } from './user.element';
 @Component({
     selector: 'user-projects',
     templateUrl: './user.projects.html',
-    styleUrls: ['./app.component.css'],
+    styleUrls: ['./user.projects.css'],
     providers: [BoxLoginService, BoxAppService]
 })
 

@@ -1,11 +1,30 @@
-<div *ngIf="showError;">
-	<p>Error: {{errorMessage}}</p>
-</div>
-<div>
-<p>{{infoMessage}}</p>
-</div>
-<div *ngIf="linkGenerated; else notGeneratedBlock">
-<a href="{{boxLoginURL}}">Login to Box</a>
-</div>
-<ng-template #notGeneratedBlock><p>Generando enlace</p></ng-template>
+
+	<div style="text-align:center; background-color:red">
+	<br>
+	<br>
+	</div>
+	
+	<div style="text-align:center; background-color: white">
+		<img width="20%" height="70%" src="assets/images/RIVANTE.jpg"><br/>
+	</div>
+	<div class="vertical-centered">
+	<div class="fondo">
+	    
+		<br>
+		<div *ngIf="showError;">
+		<p style="color:white;"><b>Error: {{errorMessage}}</b></p>
+		
+		</div>
+		<br>
+		<div>
+			<p style="color:white;" ><b>{{infoMessage}}</b></p>
+		</div>
+				<div *ngIf="linkGenerated; else notGeneratedBlock" class="center-button">
+					<a href="{{boxLoginURL}}" style="color:white; text-decoration:none;">LOGIN TO BOX</a>
+				</div>
+
+		
+		<ng-template #notGeneratedBlock><div class="center-button">Generando enlace</div></ng-template>
+	</div>
+	</div>
 

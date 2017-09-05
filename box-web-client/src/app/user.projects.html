@@ -1,9 +1,8 @@
-<h3>Projects</h3>
-<ul>
-	<li *ngFor="let projectFolder of userProjects" (click)="selectProject(projectFolder)" class="pointer">
+<h3 style="color:gray;">PROJECTS</h3>
+<ul class="project-folder">
+	<li *ngFor="let projectFolder of userProjects" (click)="selectProject(projectFolder)" class="borderlist ">
 		{{projectFolder.name}} 
 	</li>
 </ul>
-<p>hola hola!</p>
 <user-files [userElements]="userElements"></user-files>
 

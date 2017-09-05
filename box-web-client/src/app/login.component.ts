@@ -18,7 +18,7 @@ import { BoxRefreshInfo } from './box.refresh.info';
 @Component({
     selector: 'login',
     templateUrl: './login.component.html',
-    styleUrls: ['./app.component.css'],
+    styleUrls: ['./login.component.css'],
     providers: [BoxLoginService, UserService, UserFilesService, BoxAppService, SessionService]
 })
 

@@ -1,11 +1,12 @@
-<h3>Items</h3>
+<h3 style="color:gray;">ITEMS</h3>
 <ul>
-	<li *ngFor="let element of userElements">
-		<span *ngIf="element.isFolder">Directorio:</span>
-		<span *ngIf="element.isFile">&nbsp;&nbsp;</span>
-		{{element.id}}: {{element.route}}{{element.name}} 
-		<span *ngIf="element.isFolder"><a href="{{element.editLink}}">Abrir</a>  </span>
-		<span *ngIf="element.isFile"><a href="{{element.editLink}}">Editar</a> </span>
-		<span *ngIf="element.isFile"><a href="{{element.downloadLink}}">Descargar</a> </span>
+	<li *ngFor="let element of userElements" class="{{element.isFolder ? 'project-folder' : ''}} {{element.isFile ? 'project-file' : ''}}">
+		{{element.route}}
+		{{element.name}} 
+		<span *ngIf="element.isFolder"><a href="{{element.editLink}}"><br><img src="assets/images/boton-open.png" alt="OPEN" /></a>  </span>
+		<hr *ngIf="element.isFolder">
+		<span *ngIf="element.isFile"><a href="{{element.editLink}}"><br><img src="assets/images/boton_edit.png" alt="EDIT" /></a> </span>
+		<span *ngIf="element.isFile"><a href="{{element.downloadLink}}"><img src="assets/images/boton_download.png" alt="DOWNLOAD" /></a> </span>
+		<hr *ngIf="element.isFile">
 	</li>
 </ul>

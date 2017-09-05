@@ -67,7 +67,9 @@ export class BoxLoginService {
   }
   
   isnewLogin (newToken : string) {
+    
       //TODO quitar session service??
+    
     let lastLoginToken = this.sessionService.getLastLoginToken ();
     if (lastLoginToken === undefined) {
       return true;
