@@ -3,21 +3,21 @@
 <table class="folder-item">
 	<tr *ngFor="let element of userElements">
 		<td>
-			<img *ngIf="element.isFolder" src="assets/images/Icono-carpeta2.png" />
-			<img *ngIf="element.isFile" src="assets/images/Icono-archivo2.png" />
+			<img *ngIf="element.isFolder" src="assets/images/icon_folder.png" />
+			<img *ngIf="element.isFile" src="assets/images/icon_file.png" />
 		</td>
 		<td>{{element.route}}{{element.name}}</td>
 		<td *ngIf="element.isFolder">
 			<a href="{{element.editLink}}" target="_blank">OPEN</a>
-			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icono_open.png" /></a>
+			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icon_open.png" /></a>
 		</td>
 		<td *ngIf="element.isFile">
 			<a href="{{element.editLink}}" target="_blank">EDIT</a>
-			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icono_edit2.png" /></a>
+			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icon_edit.png" /></a>
 		</td>
 		<td *ngIf="element.isFile">
 			<a href="{{element.downloadLink}}" target="_blank">DOWNLOAD</a>
-			<a href="{{element.downloadLink}}" target="_blank"><img src="assets/images/icono_descarga.png" /></a>
+			<a href="{{element.downloadLink}}" target="_blank"><img src="assets/images/icon_download.png" /></a>
 		</td>
 	</tr>
 </table>

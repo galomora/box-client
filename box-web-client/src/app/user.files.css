@@ -1,0 +1,32 @@
+
+table.folder-item {
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:10px;
+	border: 1px solid black;
+	border-collapse: collapse;
+	border-style: hidden;
+	margin-left: 30px;
+	margin-bottom: 30px;
+	
+}
+
+table.folder-item tr {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+table.folder-item a {
+	color: black; 
+	text-decoration: none; 
+	font-weight: bold;
+}
+
+table.folder-item img {
+	display: inline-block;
+}
+
+.items
+{
+	color:#515151; 
+	padding-left: 42px;	
+}

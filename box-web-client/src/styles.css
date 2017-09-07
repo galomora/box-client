@@ -7,6 +7,7 @@ body {
 	font-family: arial; 
 	height: 100%;
 	background-color: #cececc;
+	background: url('/assets/images/texture.jpg') repeat center center fixed; 
 	margin: 0;
 }
 
@@ -27,7 +28,7 @@ footer {
 }
 
 .project-folder {
-	list-style-image: url('/assets/images/Icono-carpeta2.png');
+	list-style-image: url('/assets/images/icon_folder.png');
 	
 }
 
