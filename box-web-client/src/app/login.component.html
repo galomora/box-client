@@ -1,28 +1,29 @@
 <div style="text-align:center">
-<img width="100%" height="100%" src="assets/images/rivanbanner3.png"><br /><br />
+<img width="100%" height="100%" src="assets/images/rivanbanner3.png">
 </div>
 
 <div *ngIf="showError;">
 	<p>Error: {{errorMessage}}</p>
 </div>
-<div *ngIf="! (userName === undefined)" class="container">
-	<aside>
-		<h4>Welcome {{userName}}</h4>
+
+<div *ngIf="! (userName === undefined)">
+	<div class="container" >
+		<div class="center">
+			<h4>Welcome {{userName}}</h4> 
 		
+		</div>
+
+		<a [routerLink]="['/init']" [queryParams]="{logout: true}" class="close-button">Close Session</a>
+
 		<div *ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
-			<p>Su sesion expirar&aacute; en {{minutesToExpire}} minutos</p>
-			<a (click)="refreshSession()" class="pointer">Renovar Sesi&oacute;n</a>
-			
+			<p>Your session expires in {{minutesToExpire}} minutes</p>
+			<p><a (click)="refreshSession()" class="renew-button">Renew Session</a></p>
 		</div>
-		<div class="session-button">
-				<a [routerLink]="['/init']" [queryParams]="{logout: true}" style="color:white; text-decoration:none;" >Close Session</a>
-		</div>
-		
-				
+
 		<div *ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
-			<p>Su sesion ha expirado</p>
+			<p>Your session has expired</p>
 		</div>
-	</aside>
+	</div>
 	
 	<article>
 		<user-projects [userProjects]="projectFolders"></user-projects>

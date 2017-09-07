@@ -1,12 +1,25 @@
-<h3 style="color:gray;">ITEMS</h3>
-<ul>
-	<li *ngFor="let element of userElements" class="{{element.isFolder ? 'project-folder' : ''}} {{element.isFile ? 'project-file' : ''}}">
-		{{element.route}}
-		{{element.name}} 
-		<span *ngIf="element.isFolder"><a href="{{element.editLink}}"><br><img src="assets/images/boton-open.png" alt="OPEN" /></a>  </span>
-		<hr *ngIf="element.isFolder">
-		<span *ngIf="element.isFile"><a href="{{element.editLink}}"><br><img src="assets/images/boton_edit.png" alt="EDIT" /></a> </span>
-		<span *ngIf="element.isFile"><a href="{{element.downloadLink}}"><img src="assets/images/boton_download.png" alt="DOWNLOAD" /></a> </span>
-		<hr *ngIf="element.isFile">
-	</li>
-</ul>
+<h4 class="items">ITEMS</h4>
+
+<table class="folder-item">
+	<tr *ngFor="let element of userElements">
+		<td>
+			<img *ngIf="element.isFolder" src="assets/images/Icono-carpeta2.png" />
+			<img *ngIf="element.isFile" src="assets/images/Icono-archivo2.png" />
+		</td>
+		<td>{{element.route}}{{element.name}}</td>
+		<td *ngIf="element.isFolder">
+			<a href="{{element.editLink}}" target="_blank">OPEN</a>
+			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icono_open.png" /></a>
+		</td>
+		<td *ngIf="element.isFile">
+			<a href="{{element.editLink}}" target="_blank">EDIT</a>
+			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icono_edit2.png" /></a>
+		</td>
+		<td *ngIf="element.isFile">
+			<a href="{{element.downloadLink}}" target="_blank">DOWNLOAD</a>
+			<a href="{{element.downloadLink}}" target="_blank"><img src="assets/images/icono_descarga.png" /></a>
+		</td>
+	</tr>
+</table>
+<br /><br /><br />
+
