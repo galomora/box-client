@@ -4,6 +4,6 @@
 		{{projectFolder.name}} 
 	</li>
 </ul>
-<h4 class="title">PROJECT FOLDER: {{selectedProject.name}}</h4>
+<h4 class="title">PROJECT FOLDER: <div *ngIf="selectedProject">{{selectedProject.name}}</div></h4>
 <user-files [userElements]="userElements"></user-files>
 

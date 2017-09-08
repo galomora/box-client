@@ -1,40 +1,62 @@
-<div style="text-align:center">
-<img width="100%" height="100%" src="assets/images/rivante_banner.png">
+<div style="text-align: center">
+	<img width="100%" height="100%" src="assets/images/rivante_banner.png">
 </div>
 
 <div *ngIf="showError;">
 	<p>Error: {{errorMessage}}</p>
 </div>
 
-<simple-notifications ></simple-notifications>
+<simple-notifications></simple-notifications>
 
 <div *ngIf="! (userName === undefined)">
-	<div class="container" >
-		<div class="center">
-			<table><tr>
-				<td><p><h4>Welcome {{userName}}</h4></td>
-				<td><a [routerLink]="['/init']" [queryParams]="{logout: true}" class="close-button">Close Session</a></td>
-			</tr></table>
-		</div>
+	<div class="container">
+		<table style="width: 100%;">
+			<tr>
+				<td>
+					<table style="float: left;">
+						<tr>
+							<td><h4>Welcome {{userName}}</h4></td>
+							<td><a [routerLink]="['/init']"
+								[queryParams]="{logout: true}" class="close-button">Close
+									Session</a></td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table style="float: right;">
+						<tr>
+							<td><div
+									*ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
+									<p>Your session expires in {{minutesToExpire}} minutes</p>
+								</div></td>
+							<td><div
+									*ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
+									<a (click)="refreshSession()" class="renew-button">Renew
+										Session</a>
+								</div></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
 
-		<div *ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
-			<table><tr>
-				<td><p>Your session expires in {{minutesToExpire}} minutes</p></td>
-				<td><a (click)="refreshSession()" class="renew-button">Renew Session</a></td>
-			</tr></table>
-		</div>
-
-		<div *ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
-			<table><tr>
-				<td><p>Your session has expired</p></td>
-				<td><a [routerLink]="['/init']" class="close-button">Go to Start</a></td>
-			</tr></table>
-		</div>
+		<table>
+			<tr>
+				<td><div
+						*ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
+						<p>Your session has expired</p>
+					</div></td>
+				<td><div
+						*ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
+						<a [routerLink]="['/init']" class="close-button">Go to Start</a>
+					</div></td>
+			</tr>
+		</table>
 	</div>
-	
+
 	<article>
 		<user-projects [userProjects]="projectFolders"></user-projects>
-	</article>	
+	</article>
 </div>
 
 
