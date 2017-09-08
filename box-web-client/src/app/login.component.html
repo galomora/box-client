@@ -6,22 +6,29 @@
 	<p>Error: {{errorMessage}}</p>
 </div>
 
+<simple-notifications ></simple-notifications>
+
 <div *ngIf="! (userName === undefined)">
 	<div class="container" >
 		<div class="center">
-			<h4>Welcome {{userName}}</h4> 
-		
+			<table><tr>
+				<td><p><h4>Welcome {{userName}}</h4></td>
+				<td><a [routerLink]="['/init']" [queryParams]="{logout: true}" class="close-button">Close Session</a></td>
+			</tr></table>
 		</div>
 
-		<a [routerLink]="['/init']" [queryParams]="{logout: true}" class="close-button">Close Session</a>
-
 		<div *ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
-			<p>Your session expires in {{minutesToExpire}} minutes</p>
-			<p><a (click)="refreshSession()" class="renew-button">Renew Session</a></p>
+			<table><tr>
+				<td><p>Your session expires in {{minutesToExpire}} minutes</p></td>
+				<td><a (click)="refreshSession()" class="renew-button">Renew Session</a></td>
+			</tr></table>
 		</div>
 
 		<div *ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
-			<p>Your session has expired</p>
+			<table><tr>
+				<td><p>Your session has expired</p></td>
+				<td><a [routerLink]="['/init']" class="close-button">Go to Start</a></td>
+			</tr></table>
 		</div>
 	</div>
 	
