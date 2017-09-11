@@ -3,11 +3,12 @@ html {
 	min-height: 100%;
 	position: relative;
 }
+
 body {
-	font-family: arial; 
+	font-family: arial;
 	height: 100%;
 	background-color: #cececc;
-	background: url('/assets/images/texture.jpg') repeat center center fixed; 
+	background: url('/assets/images/texture.jpg') repeat center center fixed;
 	margin: 0;
 }
 
@@ -29,17 +30,15 @@ footer {
 
 .project-folder {
 	list-style-image: url('/assets/images/icon_folder.png');
-	
 }
 
-.title
-{
-	color:#515151; 
-	padding-left: 42px;	
+.title {
+	color: #515151;
+	padding-left: 42px;
 }
 
 h4 {
-	color:#515151; 
+	color: #515151;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	padding-left: 42px;
@@ -50,13 +49,26 @@ table.info-table td {
 }
 
 .info-label {
-	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	font-size:14px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size: 13px;
 	font-weight: bold;
 	padding-right: 10px !important;
 }
 
 .info-text {
-	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	font-size:14px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size: 13px;
+}
+
+@media only screen and (max-width: 480px) and (min-width: 200px) {
+	.info-label {
+		font-size: 0.7em !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+	}
+	.info-text {
+		font-size: 0.7em !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+	}
 }
