@@ -12,49 +12,35 @@
 	<div class="container">
 		<table class="login-info-container">
 			<tr>
-				<td>
-					<table class="info-table">
-						<tr>
-							<td class="info-label">Welcome {{userName}}</td>
-							<td style="padding-right: 10px;"><a [routerLink]="['/init']"
-								[queryParams]="{logout: true}" class="close-button">Close
-									Session</a></td>
-						</tr>
-					</table>
-				</td>
+
+				<td class="info-label">Welcome {{userName}}</td>
+				<td style="padding-right: 15px;"><a [routerLink]="['/init']"
+					[queryParams]="{logout: true}" class="close-button">Close
+						Session</a></td>
+
 			</tr>
 			<tr>
-				<td>
-					<table class="info-table">
-						<tr>
-							<td><div class="info-text"
-									*ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">Your
-									session expires in {{minutesToExpire}} minutes</div></td>
-							<td style="padding-right: 10px;"><div
-									*ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
-									<a (click)="refreshSession()" class="renew-button">Renew
-										Session</a>
-								</div></td>
-						</tr>
-					</table>
-				</td>
+
+				<td><div class="info-text"
+						*ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">Your
+						session expires in {{minutesToExpire}} minutes</div></td>
+				<td style="padding-right: 15px;"><div
+						*ngIf="minutesToExpire !== undefined && minutesToExpire >= 0">
+						<a (click)="refreshSession()" class="renew-button">Renew
+							Session</a>
+					</div></td>
 			</tr>
+
 			<tr>
-				<td>
-					<table class="info-table">
-						<tr>
-							<td><div class="info-text"
-									*ngIf="minutesToExpire !== undefined && minutesToExpire < 0">Your
-									session has expired</div></td>
-							<td style="padding-right: 10px;"><div
-									*ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
-									<a [routerLink]="['/init']" class="close-button">Go to
-										Start</a>
-								</div></td>
-						</tr>
-					</table>
-				</td>
+				<td><div class="info-text"
+						*ngIf="minutesToExpire !== undefined && minutesToExpire < 0">Your
+						session has expired</div></td>
+				<td style="padding-right: 15px;"><div
+						*ngIf="minutesToExpire !== undefined && minutesToExpire < 0">
+						<a [routerLink]="['/init']" class="close-button">Go to Start</a>
+					</div></td>
 			</tr>
+
 		</table>
 
 	</div>

@@ -149,7 +149,7 @@ export class LoginComponent implements OnInit {
         this.boxLoginService.refreshSession().subscribe(
             (refreshInfo : BoxRefreshInfo) => {
                 this.sessionService.refreshSessionCookie (refreshInfo);
-                this.notificationsService.error ('Session', 'Session was refreshed', NotificationOptions.options);
+                this.notificationsService.info ('Session', 'Session was refreshed', NotificationOptions.options);
             },
             error => {
                 this.displayError (error, 'Error actualizar sesion');
