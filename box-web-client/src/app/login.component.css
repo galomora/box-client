@@ -1,7 +1,3 @@
-div .container {
-    width: 100%;
-    height: 100%;
-}
  
 .close-button {
 	
@@ -10,13 +6,11 @@ div .container {
 	font-size:12px;
 	width: 100px;
 	background-color: black;
-	margin: 20px;
+	margin: 0px;
 	display: inline-block;
 	padding: 5px 10px;
 	color:white;
 	text-decoration:none;
-	margin-bottom: 5px;
-	margin-right: 5px;
     
 }
 .renew-button {
@@ -31,14 +25,11 @@ div .container {
 	padding: 5px 10px;
 	color:black;
 	text-decoration:none;
-	margin-bottom: 5px;
-	margin-right: 5px;
+	cursor: pointer;
 }
 
-div.container 
-{
+div.container {
 	width: 100%;
-	height: 100%; 
 	background-color: white;
 	text-align: center;
 	vertical-align: middle;
@@ -48,14 +39,28 @@ div.container
 	font-size:14px;
 }
 
-.left{
+.left {
     float: left;
 }
-.right{
+.right {
     float: right;
 }
-.center{
+.center {
    display:inline-block;
-   
 }
+
+table.login-info-container {
+	width: 100%;
+	padding: 0;
+}
+
+table.login-info-container td {
+	padding: 0;
+}
+
+table.login-info-container {
+	width: 100%;
+	padding: 0;
+}
+
 

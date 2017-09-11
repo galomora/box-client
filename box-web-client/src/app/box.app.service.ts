@@ -88,19 +88,6 @@ export class BoxAppService {
     }
 
     getClientFromConfig(): Observable<any> {
-//        let observableClient : Observable<any> ;
-//        
-//        this.getBoxAppConfig().subscribe(
-//            boxConfig => {
-//                observableClient = Observable.create(observer => {
-//                    observer.next(this.getClient (boxConfig));
-//                });
-//            },
-//            error => {
-//                return this.errorManagerService.handleErrorObservable
-//            }
-//        );
-//        return observableClient;
         return Observable.create(observer => {
             this.getBoxAppConfig().subscribe(
                 boxConfig => {

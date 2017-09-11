@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { URLSearchParams, QueryEncoder, Http } from '@angular/http';
+import { NotificationsService } from 'angular2-notifications';
 
 import { BoxLoginService } from './box.login.service';
 import { UserFilesService } from './user.files.service';
@@ -7,6 +8,8 @@ import { BoxAppService } from './box.app.service';
 import { BoxItemInfo } from './box.item.info';
 import { BoxAppConfig } from './box.app.config';
 import { UserElement } from './user.element';
+
+import { NotificationOptions } from './notification.options';
 
 
 @Component({
@@ -21,19 +24,20 @@ export class UserProjectsComponent {
     userProjects : Array<BoxItemInfo>;
     selectedProject : BoxItemInfo;
     boxAppConfig: BoxAppConfig;
-    errorMessage: string;
+    
     userElements: Array<UserElement> = [];
-    showError: boolean = false;
     
     constructor(private boxLoginService: BoxLoginService,
         private userFilesService: UserFilesService,
-        private boxAppService: BoxAppService) {
+        private boxAppService: BoxAppService,
+        private notificationsService : NotificationsService) {
     }
     
-    selectProject (projectFolder) {
-        this.selectedProject = projectFolder; 
-        this.getSelectedProjectFolders ();
-        }
+    selectProject(projectFolder) {
+        this.selectedProject = projectFolder;
+        this.getSelectedProjectFolders();
+        this.notificationsService.info('Current Project Folder', projectFolder.name, NotificationOptions.options);
+    }
     
     private getSelectedProjectFolders() {
         this.userElements = [];
@@ -46,17 +50,18 @@ export class UserProjectsComponent {
                         this.userFilesService.getFolderElements(rootFolderInfo, this.userElements, boxClient);
                     },
                     error => {
-                        this.errorMessage = error.toString();
-                        console.log('Error consultar directorios ' + error.toString());
-                        this.showError = true;
+                        this.printError ('Error consultar directorios ', error)
                     }
                 );
             },
             error => {
-                this.errorMessage = error.toString();
-                console.log('Error obtener configuracion ' + error.toString());
-                this.showError = true;
+                this.printError ('Error obtener configuracion ', error)
             }
         );
+    }
+    
+    private printError(consoleMessage: string, error: any) {
+        console.log(consoleMessage + error.toString());
+        this.notificationsService.error('Error', error.toString(), NotificationOptions.options);
     }
 }

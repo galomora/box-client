@@ -2,8 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms'; //  NgModel lives here
 import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { CookieService } from 'ngx-cookie-service';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 import { RootComponent } from './root.component';
 import { AppComponent } from './app.component';
@@ -28,7 +30,9 @@ import { BoxAppService } from './box.app.service';
     BrowserModule,
     FormsModule,
     HttpModule,
-    RoutingModule
+    RoutingModule,
+    BrowserAnimationsModule,
+    SimpleNotificationsModule.forRoot()
   ],
   providers: [CookieService, ErrorManagerService, SessionService, BoxLoginService, BoxAppService],
   bootstrap: [RootComponent]

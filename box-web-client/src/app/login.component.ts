@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { URLSearchParams, QueryEncoder, Http } from '@angular/http';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import 'rxjs/add/operator/map' // map
+import { NotificationsService } from 'angular2-notifications';
 
 import { BoxAppConfig } from './box.app.config';
 import { BoxLoginService } from './box.login.service';
@@ -13,7 +14,7 @@ import { UserElement } from './user.element';
 import { BoxItemInfo } from './box.item.info';
 import { BoxAuthInfo } from './box.auth.info';
 import { BoxRefreshInfo } from './box.refresh.info';
-
+import { NotificationOptions } from './notification.options';
 
 @Component({
     selector: 'login',
@@ -39,7 +40,8 @@ export class LoginComponent implements OnInit {
         private userFilesService: UserFilesService,
         private route: ActivatedRoute,
         private boxAppService: BoxAppService, 
-        private sessionService: SessionService) {
+        private sessionService: SessionService,
+        private notificationsService : NotificationsService) {
     }
 
     ngOnInit(): void {
@@ -49,14 +51,11 @@ export class LoginComponent implements OnInit {
         this.userLoginToken = this.route.snapshot.queryParams['code'];
         if (this.userLoginToken === undefined) {
             // no hay token, no login
-            console.log('no hay token, no login');
         } else {
             if (this.boxLoginService.isnewLogin(this.userLoginToken)) {
                 // nuevo token, se hace login
-                console.log('nuevo token, se hace login');
                 this.executeLoginToBox();
             } else {
-                console.log('no se debe hacer login con el mismo token anterior');
                 // no se debe hacer login con el mismo token anterior
                 this.getUserInfo();
                 this.getProjects ();
@@ -137,6 +136,7 @@ export class LoginComponent implements OnInit {
     private displayError(error: any, errorMessage: string) {
         this.errorMessage = error.toString();
         console.log(errorMessage + ' ' + error.toString());
+        this.notificationsService.error ('Error', error.toString(), NotificationOptions.options);
         this.showError = true;
     }
     
@@ -149,6 +149,7 @@ export class LoginComponent implements OnInit {
         this.boxLoginService.refreshSession().subscribe(
             (refreshInfo : BoxRefreshInfo) => {
                 this.sessionService.refreshSessionCookie (refreshInfo);
+                this.notificationsService.error ('Session', 'Session was refreshed', NotificationOptions.options);
             },
             error => {
                 this.displayError (error, 'Error actualizar sesion');

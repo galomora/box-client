@@ -32,3 +32,31 @@ footer {
 	
 }
 
+.title
+{
+	color:#515151; 
+	padding-left: 42px;	
+}
+
+h4 {
+	color:#515151; 
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 42px;
+}
+
+table.info-table td {
+	padding: 0;
+}
+
+.info-label {
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:14px;
+	font-weight: bold;
+	padding-right: 10px !important;
+}
+
+.info-text {
+	font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	font-size:14px;
+}
