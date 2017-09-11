@@ -1,4 +1,4 @@
-<h4>PROJECTS</h4>
+<h6>PROJECTS</h6>
 <ul class="project-folder">
 	<li *ngFor="let projectFolder of userProjects" (click)="selectProject(projectFolder)" class="borderlist ">
 		{{projectFolder.name}} 
@@ -6,8 +6,8 @@
 </ul>
 <table class="info-table">
 	<tr>
-		<td><h4>PROJECT FOLDER: </h4></td>
-		<td><div *ngIf="selectedProject" style="display: inline-block;">{{selectedProject.name}}</div></td>
+		<td><h6>PROJECT FOLDER: </h6></td>
+		<td><div *ngIf="selectedProject" class="info-text">{{selectedProject.name}}</div></td>
 	</tr>
 </table>
 <user-files [userElements]="userElements"></user-files>

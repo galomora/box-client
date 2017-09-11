@@ -1,4 +1,4 @@
-<h4>ITEMS</h4>
+<h6>ITEMS</h6>
 
 <table class="folder-item">
 	<tr *ngFor="let element of userElements">
@@ -6,7 +6,7 @@
 			<img *ngIf="element.isFolder" src="assets/images/icon_folder.png" />
 			<img *ngIf="element.isFile" src="assets/images/icon_file.png" />
 		</td>
-		<td>{{element.route}}{{element.name}}</td>
+		<td>{{element.name}}</td>
 		<td *ngIf="element.isFolder">
 			<a href="{{element.editLink}}" target="_blank">OPEN</a>
 			<a href="{{element.editLink}}" target="_blank"><img src="assets/images/icon_open.png" /></a>

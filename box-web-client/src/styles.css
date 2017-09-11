@@ -37,11 +37,11 @@ footer {
 	padding-left: 42px;
 }
 
-h4 {
+h6 {
 	color: #515151;
-	padding-top: 10px;
-	padding-bottom: 10px;
+
 	padding-left: 42px;
+	margin: 5px;
 }
 
 table.info-table td {
@@ -57,7 +57,7 @@ table.info-table td {
 
 .info-text {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	font-size: 13px;
+	font-size: 11px;
 }
 
 @media only screen and (max-width: 480px) and (min-width: 200px) {
