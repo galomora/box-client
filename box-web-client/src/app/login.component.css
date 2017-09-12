@@ -59,7 +59,7 @@ table.login-info-container td {
 }
 
 
-@media only screen and (max-width: 480px) and (min-width: 200px) {
+@media only screen and (max-width: 800px) and (min-width: 200px) {
 	table.login-info-container {
 		width: 100%;
 		padding: 0;
